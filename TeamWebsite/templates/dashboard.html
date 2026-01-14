@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>RelayBot Dashboard</title>
+    <link rel="stylesheet" href="/static/dashboard.css">
+    <link rel="stylesheet" href="/static/homestyle.css"> <!-- navbar styling -->
+</head>
+<body>
+
+    <!-- Navigation Bar -->
+    <header class="navbar">
+        <div class="logo">THE CIRCUIT SYNDICATE</div>
+        <nav>
+            <a href="/">Home</a>
+            <a href="network">Network</a>
+            <a href="dashboard">Dashboard</a>
+            <a href="team">Team</a>
+        </nav>
+    </header>
+
+    <h1 style="margin-top: 40px;">RelayBot Live Telemetry</h1>
+
+    <div class="card">
+        
+        <div class="label">Bot</div>
+        <div id="botID" class="botID">--</div>
+
+        <div class="label">Left Speed</div>
+        <div id="left" class="value">--</div>
+        <div class="speed-bar">
+            <div id="left-bar" class="fill"></div>
+        </div>
+
+        <div class="label">Right Speed</div>
+        <div id="right" class="value">--</div>
+        <div class="speed-bar">
+            <div id="right-bar" class="fill"></div>
+        </div>
+
+        <div class="label">State</div>
+        <div id="state" class="state">--</div>
+
+        <div id="timestamp" class="timestamp">Waiting for data...</div>
+    </div>
+
+    <script>
+        async function update() {
+            try {
+                const res = await fetch("/latest");
+                const data = await res.json();
+
+                if (data.status === "no data yet") {
+                    document.getElementById("timestamp").textContent = "No data yet";
+                    return;
+                }
+
+                document.getElementById("botID").textContent = data.bot;
+                document.getElementById("left").textContent = data.left;
+                document.getElementById("right").textContent = data.right;
+                document.getElementById("timestamp").textContent = "Updated: " + data.timestamp;
+
+                const leftPercent = Math.min((data.left / 255) * 100, 100);
+                const rightPercent = Math.min((data.right / 255) * 100, 100);
+
+                document.getElementById("left-bar").style.width = leftPercent + "%";
+                document.getElementById("right-bar").style.width = rightPercent + "%";
+
+                const stateEl = document.getElementById("state");
+                stateEl.textContent = data.state;
+                stateEl.className = "state";
+
+                const s = data.state.toLowerCase();
+
+                if (s.includes("follow")) stateEl.classList.add("state-follow");
+                else if (s.includes("obstacle")) stateEl.classList.add("state-obstacle");
+                else if (s.includes("done")) stateEl.classList.add("state-done");
+                else if (s.includes("search")) stateEl.classList.add("state-search");
+                else if (s.includes("running")) stateEl.classList.add("state-running");
+                else if (s.includes("turning")) stateEl.classList.add("state-turning");
+
+            } catch (e) {
+                document.getElementById("timestamp").textContent = "Error fetching data";
+            }
+        }
+
+        setInterval(update, 200);
+        update();
+    </script>
+
+</body>
+</html>

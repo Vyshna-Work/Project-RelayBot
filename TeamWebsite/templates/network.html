@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Network Architecture | The Circuit Syndicate</title>
+    <link rel="stylesheet" href="/static/homestyle.css">
+</head>
+<body>
+
+    <!-- Navbar -->
+    <header class="navbar">
+        <div class="logo">The Circuit Syndicate</div>
+        <nav>
+            <a href="/">Home</a>
+            <a href="network">Network</a>
+            <a href="dashboard">Dashboard</a>
+            <a href="team">Team</a>
+        </nav>
+    </header>
+
+    <!-- Network Hero -->
+    <section class="hero">
+        <h1>Network Architecture</h1>
+        <p>
+            An overview of how the master system communicates with relay bots and
+            forwards telemetry data to cloud services for monitoring.
+        </p>
+    </section>
+
+    <!-- Network Content -->
+    <section class="network-section">
+
+        <div class="network-text">
+            <h2>Communication Flow</h2>
+            <p>
+                The system uses a centralized Master Arduino (UNO R4 WiFi) to control
+                multiple relay bots via HC-12 wireless modules. Telemetry data collected
+                from each bot is transmitted back to the master and forwarded to a cloud
+                server using HTTP JSON POST requests.
+            </p>
+
+            <p>
+                The backend server, hosted on Render with a Flask application, stores
+                telemetry data in a database. This data is then accessed by a web-based
+                dashboard for real-time monitoring and analysis.
+            </p>
+        </div>
+
+        <div class="network-diagram">
+            <img src="/static/images/Networkwireframe.jpg" alt="Relay Bots Network Architecture Diagram">
+            <p class="caption">System communication and data flow overview</p>
+        </div>
+
+    </section>
+
+</body>
+</html>
